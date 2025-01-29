@@ -28,11 +28,12 @@
 
 name: SonarCloud analysis
 
+#rename branch once sonar setup is done
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "test" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "test" ]
   workflow_dispatch:
 
 permissions:
