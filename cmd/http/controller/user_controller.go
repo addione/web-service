@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/addione/web-service/cmd/http/manager"
+	"github.com/addione/web-service/model/request"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,6 +19,17 @@ func NewUserController(hdi *httpDIContainer) *userController {
 }
 
 func (uc *userController) CreateUser(ctx *gin.Context) {
-	uc.um.CreateNewUser()
-	ctx.JSON(http.StatusOK, gin.H{`message`: `user creation is in progress`})
+	createUserParams, err := request.ValidateCreateUser(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		return
+	}
+	u, err := uc.um.CreateNewUser(createUserParams)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
+
+	}
+	ctx.JSON(http.StatusOK, u)
+
 }
